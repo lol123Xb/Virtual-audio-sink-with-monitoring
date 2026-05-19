@@ -3,12 +3,34 @@
 # Configuration
 MONITOR_PID_FILE="/tmp/audio-monitor.pid"
 
-# Function to get ALL sink input IDs that match a pattern in name or binary
+# Function to check if a sink input is from a loopback module by checking node.name
+is_loopback_sink_input() {
+  local sink_id=$1
+  
+  # Get the full sink input info
+  local info=$(pactl list sink-inputs | grep -A 30 "Sink Input #$sink_id")
+  
+  # Check for node.name containing "loopback"
+  local node_name=$(echo "$info" | grep "node.name" | head -1 | sed 's/.*= "\(.*\)"/\1/')
+  
+  if [[ "$node_name" == *"loopback"* ]] || [[ "$node_name" == *"Loopback"* ]]; then
+    return 0  # It is a loopback
+  fi
+  
+  return 1  # Not a loopback
+}
+
+# Function to get ALL sink input IDs that match a pattern in name or binary (excluding loopbacks)
 get_sink_input_ids_by_pattern() {
   local pattern=$1
   
   # Get all sink inputs and check each one
   pactl list sink-inputs short | awk '{print $1}' | while read id; do
+    # Skip loopback modules
+    if is_loopback_sink_input "$id"; then
+      continue
+    fi
+    
     # Get the full sink input info
     local info=$(pactl list sink-inputs | grep -A 30 "Sink Input #$id")
     
@@ -26,15 +48,20 @@ get_sink_input_ids_by_pattern() {
   done
 }
 
-# Function to move a specific sink input by ID
+# Function to move a specific sink input by ID (skip loopbacks)
 move_sink_input_to_sink() {
   local sink_id=$1
   local sink_name=$2
   
+  # Double-check it's not a loopback before moving
+  if is_loopback_sink_input "$sink_id"; then
+    return
+  fi
+  
   pactl move-sink-input "$sink_id" "$sink_name" 2>/dev/null
 }
 
-# Function to move ALL Wine/Proton games to Desktop
+# Function to move ALL Wine/Proton games to Desktop (excluding loopbacks)
 move_all_games_to_desktop() {
   # Patterns that identify Wine/Proton games
   local game_patterns=(
@@ -56,7 +83,7 @@ move_all_games_to_desktop() {
   done
 }
 
-# Move specific applications by exact name or binary
+# Move specific applications by exact name or binary (excluding loopbacks)
 move_application_to_sink() {
   local app_name=$1
   local sink_name=$2
@@ -68,7 +95,7 @@ move_application_to_sink() {
   done
 }
 
-# Monitor for new applications
+# Monitor for new applications (excluding loopbacks)
 monitor_apps() {
   echo "=== Audio Monitor Started ==="
   echo "Monitoring for new audio applications..."
@@ -83,7 +110,7 @@ monitor_apps() {
   echo "To stop: kill $$ or run '$0 --stop'"
   echo "================================"
   
-  # Process existing apps first
+  # Process existing apps first (skip loopbacks)
   move_all_games_to_desktop
   move_application_to_sink "Chromium" "Music"
   move_application_to_sink "OBS" "Desktop"
@@ -100,6 +127,11 @@ monitor_apps() {
       local new_sink_id=$(pactl list sink-inputs short | tail -1 | awk '{print $1}')
       
       if [ -n "$new_sink_id" ]; then
+        # Skip if it's a loopback module
+        if is_loopback_sink_input "$new_sink_id"; then
+          continue
+        fi
+        
         local info=$(pactl list sink-inputs | grep -A 30 "Sink Input #$new_sink_id")
         local app_name=$(echo "$info" | grep "application.name" | head -1 | sed 's/.*= "\(.*\)"/\1/')
         local app_binary=$(echo "$info" | grep "application.process.binary" | head -1 | sed 's/.*= "\(.*\)"/\1/')
@@ -170,7 +202,7 @@ case "$1" in
     echo ""
     ;;
   *)
-    # Default behavior: move everything
+    # Default behavior: move everything (excluding loopbacks)
     echo "=== Moving Games to Desktop ==="
     move_all_games_to_desktop
     
