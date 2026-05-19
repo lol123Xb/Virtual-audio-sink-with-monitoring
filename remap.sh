@@ -168,10 +168,6 @@ case "$1" in
     echo "  --stop        Stop the background monitor"
     echo "  --help        Show this help"
     echo ""
-    echo "Examples:"
-    echo "  $0              # Move all current audio to correct sinks"
-    echo "  $0 --monitor &  # Start auto-routing for new apps"
-    echo "  $0 --stop       # Stop auto-routing"
     ;;
   *)
     # Default behavior: move everything
