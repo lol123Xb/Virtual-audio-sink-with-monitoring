@@ -47,7 +47,7 @@ If you made changes to the audio sinks to either create a new one or remove one/
 # Process existing apps first
   move_all_games_to_desktop
   move_application_to_sink "Chromium" "Music"
-  move_application_to_sink "OBS" "Desktop"
+  move_application_to_sink "OBS" "Desktop" # I moved the OBS monitoring output to Desktop as well because I use a capture card to record console/second pc/etc and I want the audio to be recorded as well
   move_application_to_sink "WEBRTC VoiceEngine" "Discord"
   move_application_to_sink "Discord" "Discord"
 
