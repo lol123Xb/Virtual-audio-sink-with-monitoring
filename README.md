@@ -16,7 +16,7 @@ So to start, check `create.sh` and do any changes to these 2 lines or any additi
 
 **create.sh**
 ```bash
-# line 64
+# line 71
 create_isolated_sink "Discord" "Discord"
 create_isolated_sink "Music" "Music"
 # Add more if you need more tracks
@@ -35,16 +35,14 @@ chmod +x remove.sh
 
 Next, you want to run `./create.sh` to let it create the virtual audio devices/sinks/outputs
 
-After that, you can either run `./remap.sh` alone or you can add `--monitor &` to it to let it automatically remap any new playback sources or audio sources to **Desktop** only output in the background.
-
-If you use `--monitor &` and not `--monitor`, it lets you exit the terminal as the `&` sign seems to allow running terminal commands in the background, which I only learnt while making this 😂
+After that, you can either run `./remap.sh` alone or you can add `--start` to it to let it automatically remap any new playback sources or audio sources to **Desktop** only output in the background.
 
 If you made changes to the audio sinks to either create a new one or remove one/etc, then you'll have to modify these parts of the code:
 
 **remap.sh**
 ```bash
-# line 86
-# Process existing apps first
+# line 107
+# Process existing apps first (skip loopbacks)
   move_all_games_to_desktop
   move_application_to_sink "Chromium" "Music"
   move_application_to_sink "OBS" "Desktop"  # I moved the OBS monitoring output
@@ -54,20 +52,30 @@ If you made changes to the audio sinks to either create a new one or remove one/
                                             # as well
   move_application_to_sink "WEBRTC VoiceEngine" "Discord"
   move_application_to_sink "Discord" "Discord"
+  move_all_games_to_desktop
 
 ...
 
-# line 108
+# line 136
 # Determine target sink
 local target_sink="Desktop"
 
 if [[ "$app_name" == *"Chromium"* ]]; then
-  target_sink="Music"
+	target_sink="Music"
 elif [[ "$app_name" == *"WEBRTC"* ]] || [[ "$app_name" == *"Discord"* ]]; then
-  target_sink="Discord"
+	target_sink="Discord"
 elif [[ "$app_binary" == *"wine"* ]] || [[ "$app_binary" == *"preloader"* ]]; then
-  target_sink="Desktop"
+	target_sink="Desktop"
 fi
+
+...
+
+# line 188
+echo "=== Moving Other Apps ==="
+move_application_to_sink "Chromium" "Music"
+move_application_to_sink "OBS" "Desktop"
+move_application_to_sink "WEBRTC VoiceEngine" "Discord"
+move_application_to_sink "Discord" "Discord"
 ```
 Modifying these lines of codes can also help if you want to manually set a specific app to not be recorded by OBS, such as moving **Brave** to the **Music** output (I use **Noutube** for my music, hence why it's using **Chromium** as the target source), since the remap monitoring will just undo your manual changes if you changed any output for specific playbacks via **PulseAudio Volume Control**
 
