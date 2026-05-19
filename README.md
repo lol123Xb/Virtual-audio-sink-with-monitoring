@@ -72,3 +72,6 @@ fi
 Modifying these lines of codes can also help if you want to manually set a specific app to not be recorded by OBS, such as moving **Brave** to the **Music** output (I use **Noutube** for my music, hence why it's using **Chromium** as the target source), since the remap monitoring will just undo your manual changes if you changed any output for specific playbacks via **PulseAudio Volume Control**
 
 If you want to remove all of the created audio sinks/outputs, just run `./remove.sh` and if you want it to stop monitoring just run `./remap.sh --stop`
+
+## Note
+Usually when changing your default physical audio output device, the main loopback module that's playing the actual full desktop audio should automatically swap to your new default physical device, but if it doesn't then go onto **PulseAudio Volume Control** and manually change it once, then it'll automatically change on its own
