@@ -40,17 +40,25 @@ create_isolated_sink() {
   fi
 }
 
+# Function to unload all modules by name pattern
+unload_modules() {
+  local pattern=$1
+  echo "Finding modules matching pattern: $pattern"
+  pactl list modules short | grep "$pattern" | while read -r module; do
+    module_id=$(echo "$module" | awk '{print $1}')
+    module_name=$(echo "$module" | awk '{print $2}')
+    echo "Unloading module $module_id ($module_name)"
+    pactl unload-module "$module_id"
+  done
+}
+
 # Update loopbacks to current physical sink
 update_loopbacks() {
   local physical_sink=$(get_physical_sink)
   echo "Routing to physical sink: $physical_sink"
   
   # Remove old loopbacks
-  pactl list short loopbacks | while read id src sink; do
-    if [[ "$src" == "Desktop.monitor" || "$src" == "Discord.monitor" || "$src" == "Music.monitor" ]]; then
-      pactl unload-module "$id" 2>/dev/null
-    fi
-  done
+  unload_modules "module-loopback"
   
   # Create new loopbacks
   pactl load-module module-loopback source=Desktop.monitor sink="$physical_sink"
