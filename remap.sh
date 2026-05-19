@@ -140,6 +140,8 @@ monitor_apps() {
             target_sink="Music"
           elif [[ "$app_name" == *"WEBRTC"* ]] || [[ "$app_name" == *"Discord"* ]]; then
             target_sink="Discord"
+          elif [[ "$app_name" == *"OBS"* ]] || [[ "$app_name" == *"obs"* ]]; then
+            target_sink="Desktop"
           elif [[ "$app_binary" == *"wine"* ]] || [[ "$app_binary" == *"preloader"* ]]; then
             target_sink="Desktop"
           fi
