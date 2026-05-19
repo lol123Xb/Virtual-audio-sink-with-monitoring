@@ -64,13 +64,15 @@ if [[ "$app_name" == *"Chromium"* ]]; then
 	target_sink="Music"
 elif [[ "$app_name" == *"WEBRTC"* ]] || [[ "$app_name" == *"Discord"* ]]; then
 	target_sink="Discord"
+elif [[ "$app_name" == *"OBS"* ]] || [[ "$app_name" == *"obs"* ]]; then
+	target_sink="Desktop"
 elif [[ "$app_binary" == *"wine"* ]] || [[ "$app_binary" == *"preloader"* ]]; then
 	target_sink="Desktop"
 fi
 
 ...
 
-# line 188
+# line 284
 echo "=== Moving Other Apps ==="
 move_application_to_sink "Chromium" "Music"
 move_application_to_sink "OBS" "Desktop"
