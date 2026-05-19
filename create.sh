@@ -40,7 +40,7 @@ create_isolated_sink() {
   fi
 }
 
-# Update loopbacks to current physical sink (run this after switching Bluetooth)
+# Update loopbacks to current physical sink
 update_loopbacks() {
   local physical_sink=$(get_physical_sink)
   echo "Routing to physical sink: $physical_sink"
