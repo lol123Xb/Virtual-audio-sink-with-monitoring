@@ -13,6 +13,8 @@ sudo apt install pactl pavucontrol
 
 ### Before you start
 So to start, check `create.sh` and do any changes to these 2 lines or any additions, if you want to split your audio up more into different audio tracks
+
+**create.sh**
 ```bash
 # line 64
 create_isolated_sink "Discord" "Discord"
@@ -38,6 +40,8 @@ After that, you can either run `./remap.sh` alone or you can add `--monitor &` t
 If you use `--monitor &` and not `--monitor`, it lets you exit the terminal as the `&` sign seems to allow running terminal commands in the background, which I only learnt while making this 😂
 
 If you made changes to the audio sinks to either create a new one or remove one/etc, then you'll have to modify these parts of the code:
+
+**remap.sh**
 ```bash
 # line 86
 # Process existing apps first
