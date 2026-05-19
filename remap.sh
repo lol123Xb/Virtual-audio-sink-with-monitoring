@@ -249,11 +249,6 @@ case "$1" in
   --stop)
     stop_monitor
     ;;
-  --restart)
-    stop_monitor
-    sleep 2
-    start_daemon
-    ;;
   --status)
     show_status
     ;;
@@ -270,7 +265,6 @@ case "$1" in
     echo "Daemon commands:"
     echo "  --start       Start the audio monitor as a daemon (auto-restarts)"
     echo "  --stop        Stop the daemon"
-    echo "  --restart     Restart the daemon"
     echo "  --status      Show daemon status"
     echo "  --logs        Tail the log file"
     echo ""
