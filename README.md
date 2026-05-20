@@ -84,4 +84,4 @@ Modifying these lines of codes can also help if you want to manually set a speci
 If you want to remove all of the created audio sinks/outputs, just run `./remove.sh` and if you want it to stop monitoring just run `./remap.sh --stop`
 
 ## Note
-Usually when changing your default physical audio output device, the main loopback module that's playing the actual full desktop audio should automatically swap to your new default physical device, but if it doesn't then go onto **PulseAudio Volume Control** and manually change it once, then it'll automatically change on its own
+Usually when changing your default physical audio output device, the loopback modules that are monitoring the audios from discord/desktop/games/music should automatically swap to your new default physical device, but if they don't then go onto **PulseAudio Volume Control** and manually change all of them once, then they'll automatically change on their own after that
