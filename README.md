@@ -1,4 +1,6 @@
 # Virtual audio sink with monitoring
+<img width="586" height="232" alt="Screenshot from 2026-05-20 19-10-24" src="https://github.com/user-attachments/assets/73077d27-a557-4302-b71b-843c96e67238" />
+
 Linux specific virtual audio splitting for streaming and recording on OBS, and automatic remapping of new game and audio playback sources
 
 ## Requirements
